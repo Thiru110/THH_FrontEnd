@@ -276,7 +276,13 @@ const LinkExtraction = () => {
                   </StyledTableCell>
                   <StyledTableCell align="center">
                     <Tooltip title="Click">
-                      <StyledNavLink to={row.link}>Link</StyledNavLink>
+                      <StyledNavLink
+                        to={row.link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        Link
+                      </StyledNavLink>
                     </Tooltip>
                   </StyledTableCell>
                 </TableRow>

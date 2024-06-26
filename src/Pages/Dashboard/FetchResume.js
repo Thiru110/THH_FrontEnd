@@ -199,7 +199,7 @@ const FetchResume = () => {
         const updatedMap = { ...percentageMap };
         updatedMap[email] = result.relevent_experience;
         setPercentageMap(updatedMap);
-        toast.success(`Relevant Experience: ${result.relevent_experience}`);
+        toast.success(`Successfully Calculated Relevant Experience`);
       } else {
         console.error("Relevant Experience API call failed:", result.status);
         toast.error(result.message);
@@ -308,101 +308,6 @@ const FetchResume = () => {
           </Button>
         </Box>
       </LocalizationProvider>
-      {/* <LocalizationProvider dateAdapter={AdapterDateFns}>
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "space-evenly",
-            alignItems: "center",
-            flexWrap: "wrap",
-            padding: "15px",
-            gap: 2,
-          }}
-        >
-          <TextField
-            select
-            label="Select Email"
-            value={selectedEmail}
-            onChange={(e) =>
-              setSelectedEmail(
-                e.target.value === "No Email" ? "" : e.target.value
-              )
-            }
-            sx={{ width: 150 }}
-          >
-            {Array.isArray(data) && data.length > 0 ? (
-              data.map((job) => (
-                <MenuItem
-                  key={job.email || "default"}
-                  value={job.email || "No Email"}
-                >
-                  {job.email || "No Email"}
-                </MenuItem>
-              ))
-            ) : (
-              <MenuItem key="default" value="No Email">
-                No Email
-              </MenuItem>
-            )}
-          </TextField>
-          <TextField
-            select
-            label="JD ID"
-            value={selectedJobId}
-            variant="standard"
-            onChange={(e) => setSelectedJobId(e.target.value)}
-            sx={{ width: 150 }}
-          >
-            <MenuItem value="">
-              <em>None</em>
-            </MenuItem>
-            {Array.isArray(jobIds) &&
-              jobIds.map((id, index) => (
-                <MenuItem key={index} value={id}>
-                  {id}
-                </MenuItem>
-              ))}
-          </TextField>
-          <Box sx={{ display: "flex", alignItems: "center" }}>
-            <DatePicker
-              label="Start Date"
-              value={startDate}
-              onChange={(date) => setStartDate(date)}
-              renderInput={(params) => (
-                <TextField {...params} sx={{ width: 150 }} />
-              )}
-            />
-            {startDate && (
-              <IconButton onClick={() => setStartDate(null)}>
-                <ClearIcon />
-              </IconButton>
-            )}
-          </Box>
-          <Box sx={{ display: "flex", alignItems: "center" }}>
-            <DatePicker
-              label="End Date"
-              value={endDate}
-              onChange={(date) => setEndDate(date)}
-              renderInput={(params) => (
-                <TextField {...params} sx={{ width: 150 }} />
-              )}
-            />
-            {endDate && (
-              <IconButton onClick={() => setEndDate(null)}>
-                <ClearIcon />
-              </IconButton>
-            )}
-          </Box>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={handleSearchClick}
-          >
-            Search
-          </Button>
-        </Box>
-      </LocalizationProvider> */}
-
       <TableContainer
         // component={Paper}
         sx={{ overflowX: "auto", padding: "15px 150px" }}
@@ -431,7 +336,7 @@ const FetchResume = () => {
                   </StyledTableCell>
                   <StyledTableCell align="left">{row.Email}</StyledTableCell>
                   <StyledTableCell align="left">
-                    {row.Similarity}
+                    {row.Similarity * 100}
                   </StyledTableCell>
                   <StyledTableCell align="center">
                     <Tooltip title="Download">
@@ -476,7 +381,13 @@ const FetchResume = () => {
                     </Tooltip>
                   </StyledTableCell>
                   <StyledTableCell align="center">
-                    <Tooltip title="Please fill a Job ID to enable Relevant Ranking">
+                    <Tooltip
+                      title={
+                        selectedJobId !== ""
+                          ? ""
+                          : "Please fill a Job ID to enable Relevant Ranking"
+                      }
+                    >
                       <ImageButton
                         onClick={() =>
                           handleRelevantExperienceClick(

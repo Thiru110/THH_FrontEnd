@@ -11,7 +11,7 @@ import CancelIcon from "@mui/icons-material/Cancel";
 import SearchIcon from "../../Utils/SearchIcon.gif";
 import { toast } from "react-toastify";
 import axiosInstance from "../../axios/axiosConfig";
-import { Loader } from "../../CommonComp/LoaderComponent/loader";
+// import { Loader } from "../../CommonComp/LoaderComponent/loader";
 import { TbMessageChatbot } from "react-icons/tb";
 const Chatbox = () => {
   const [messages, setMessages] = useState([
@@ -229,96 +229,14 @@ const Chatbox = () => {
     // Trigger the hidden file input when the button is clicked
     fileInputRef.current.click();
   };
-  // const handleFetch = (selectedFile, userEmail) => {
-  //   if (selectedFile && userEmail) {
-  //     // Add user action (file upload) to the chat
-  //     setMessages((prevMessages) => [
-  //       ...prevMessages,
-  //       {
-  //         text: `Uploading file: ${selectedFile.name}`,
-  //         fromBot: false,
-  //       },
-  //     ]);
-
-  //     // Clear file input after sending the message
-  //     clearFileSelection();
-
-  //     const formData = new FormData();
-  //     formData.append("file", selectedFile);
-  //     formData.append("email", userEmail);
-
-  //     axiosInstance
-  //       .post("/extract_keywords", formData, {
-  //         headers: {
-  //           "Content-Type": "multipart/form-data",
-  //         },
-  //       })
-  //       .then((response) => {
-  //         toast.success(
-  //           "Your resumes have been fetched. Click dashboard to view your resumes."
-  //         );
-  //         // Add success message to the chat
-  //         setMessages((prevMessages) => [
-  //           ...prevMessages,
-  //           {
-  //             text: "File uploaded successfully.",
-  //             fromBot: false,
-  //           },
-  //         ]);
-  //       })
-  //       .catch((error) => {
-  //         console.error("Error uploading file:", error);
-  //         // Add error message to the chat
-  //         setMessages((prevMessages) => [
-  //           ...prevMessages,
-  //           {
-  //             text: "File upload failed. Please try again.",
-  //             fromBot: false,
-  //           },
-  //         ]);
-  //       });
-  //   }
-  // };
   // !this is having email and file need to fix the email
   // const handleImageUpload = async (selectedFile, userEmail) => {
-  //   if (selectedFile && userEmail) {
-  //     const formData = new FormData();
-  //     formData.append("file", selectedFile);
-  //     formData.append("email", userEmail);
-  //     setBotLoading(true);
-  //     await axios
-  //       .post("/validate_image", formData, {
-  //         headers: {
-  //           "Content-Type": "multipart/form-data",
-  //         },
-  //       })
-  //       .then((response) => {
-  //         setMessages((prevMessages) => [
-  //           ...prevMessages,
-  //           {
-  //             text: "Image uploaded successfully. Please wait while we process your request.",
-  //             fromBot: true,
-  //           },
-  //         ]);
-  //       })
-  //       .catch((error) => {
-  //         console.error("Error uploading image:", error);
-  //         setMessages((prevMessages) => [
-  //           ...prevMessages,
-  //           {
-  //             text: "Image upload failed. Please try again.",
-  //             fromBot: true,
-  //           },
-  //         ]);
-  //         clearFileSelection();
-  //       })
-  //       .finally(() => setBotLoading(false));
-  //   }
-  // };
   const handleImageUpload = async (selectedFile) => {
+    //   if (selectedFile && userEmail) {
     if (selectedFile) {
       const formData = new FormData();
       formData.append("file", selectedFile);
+      //     formData.append("email", userEmail);
       setBotLoading(true);
       await axiosInstance
         .post("/docvalidation", formData, {
@@ -330,7 +248,7 @@ const Chatbox = () => {
           setMessages((prevMessages) => [
             ...prevMessages,
             {
-              // text: "Image uploaded successfully. Please wait while we process your request.",
+              //! text: "Image uploaded successfully. Please wait while we process your request.",
               text: response?.data,
               fromBot: true,
             },
@@ -357,6 +275,14 @@ const Chatbox = () => {
       formData.append("file", selectedFile);
       formData.append("email", userEmail);
       setBotLoading(true);
+
+      setMessages((prevMessages) => [
+        ...prevMessages,
+        {
+          text: selectedFileName,
+          fromBot: false,
+        },
+      ]);
       axiosInstance
         .post("/extract_keywords", formData, {
           headers: {
@@ -367,13 +293,15 @@ const Chatbox = () => {
           toast.success(
             "Your resumes have been fetched click dashboard to view your resumes"
           );
+
           setMessages((prevMessages) => [
             ...prevMessages,
             {
-              text: "File uploaded successfully.you can see in dashboard",
-              fromBot: false,
+              text: response.data?.message,
+              fromBot: true,
             },
           ]);
+          clearFileSelection();
         })
         .catch((error) => {
           console.error("Error uploading file:", error);
@@ -389,37 +317,10 @@ const Chatbox = () => {
         .finally(() => setBotLoading(false));
     }
   };
-
-  // !correct code
-  // const handleFetch = (selectedFile, userEmail) => {
-  //   if (selectedFile && userEmail) {
-  //     const formData = new FormData();
-  //     formData.append("file", selectedFile);
-  //     formData.append("email", userEmail); // Append the user email
-
-  //     axios
-  //       .post("http://localhost:4000/extract_keywords", formData, {
-  //         headers: {
-  //           "Content-Type": "multipart/form-data",
-  //         },
-  //       })
-  //       .then((response) => {
-  //         toast.success(
-  //           "Your resumes have been fetched click dashboard to view your resumes"
-  //         );
-  //         console.log("File uploaded successfully", response.data);
-  //       })
-  //       .catch((error) => {
-  //         console.error("Error uploading file:", error);
-  //       });
-  //   }
-  // };
-  // ! ****************************************************for copy paste api*********************************************************
-
-  const handleFetchCopypaste = async (data, userEmail) => {
-    try {
+  const handleFetchCopypaste = (data, userEmail) => {
+    if (data && userEmail) {
       setBotLoading(true);
-      const response = await handleFetchCP(data, userEmail);
+      setInput("");
       setMessages((prevMessages) => [
         ...prevMessages,
         {
@@ -427,28 +328,39 @@ const Chatbox = () => {
           fromBot: false,
         },
       ]);
-      console.log("File uploaded successfully", response.status);
-      setMessages((prevMessages) => [
-        ...prevMessages,
-        {
-          text: response.status,
-          fromBot: false,
-        },
-      ]);
-      toast.success("Successfully fetched");
-    } catch (error) {
-      console.error("Error uploading file:", error);
-      setMessages((prevMessages) => [
-        ...prevMessages,
-        {
-          text: "An error occurred while processing your request.",
-          fromBot: true,
-        },
-      ]);
-    } finally {
-      setBotLoading(false);
+
+      handleFetchCP(data, userEmail)
+        .then((response) => {
+          console.log(`copypaste response: ${response}`); // response is the actual data returned
+
+          //!!!!! console.log("File uploaded successfully", response.status);
+
+          setMessages((prevMessages) => [
+            ...prevMessages,
+            {
+              text: response.message, // access message directly from response
+              fromBot: true,
+            },
+          ]);
+
+          toast.success("Successfully fetched");
+        })
+        .catch((error) => {
+          console.error("Error uploading file:", error);
+          setMessages((prevMessages) => [
+            ...prevMessages,
+            {
+              text: "An error occurred while processing your request.",
+              fromBot: true,
+            },
+          ]);
+        })
+        .finally(() => {
+          setBotLoading(false);
+        });
     }
   };
+
   const handleKeyDown = (event) => {
     if (event.key === "Enter") {
       event.preventDefault();
@@ -461,7 +373,6 @@ const Chatbox = () => {
     localStorage.removeItem("selectedFile");
     localStorage.removeItem("selectedFileName");
   };
-
   return (
     <Box
       className="chatbot"
@@ -513,10 +424,14 @@ const Chatbox = () => {
             }}
           >
             <Box component="p" sx={{ display: "flex", alignItems: "end" }}>
-              {message.fromBot && <TbMessageChatbot size={30} color="green" />}
+              <div>
+                {message.fromBot && (
+                  <TbMessageChatbot size={30} color="green" />
+                )}
+              </div>
               <Box
                 sx={{
-                  backgroundColor: message.fromBot ? "#dbd7d77d" : "#058719cf",
+                  backgroundColor: message.fromBot ? "#dbd7d77d" : "#30b945b8",
                   padding: "5px 15px",
                   borderRadius: message.fromBot
                     ? "20px 20px 20px 0px"
@@ -540,7 +455,7 @@ const Chatbox = () => {
             }}
           >
             <Box component="p" sx={{ display: "flex", alignItems: "end" }}>
-              <TbMessageChatbot size={30} color="green" />
+              {/* <TbMessageChatbot size={30} color="green" /> */}
               <Box
                 sx={{
                   backgroundColor: "#dbd7d77d",
@@ -685,6 +600,8 @@ const Chatbox = () => {
           messages[messages.length - 1].text.toLowerCase() ===
             "upload your file to validate and wait till we process".toLowerCase() ? (
           <>
+            {/* {selectedFile && clearFileSelection()} */}
+
             <input
               type="file"
               ref={fileInputRef}
@@ -707,7 +624,7 @@ const Chatbox = () => {
                   onClick={() => handleImageUpload(selectedFile)}
                   disabled={isBotLoading}
                 >
-                  Check
+                  Validate
                 </Button>
                 <Box
                   sx={{
