@@ -43,4 +43,4 @@ To install and set up the Talent Harbour Hub locally, follow these steps:
 
 1. Clone this repository:
    ```bash
-   git clone https://github.com/yourusername/talent-harbour-hub.git
+   git clone https://github.com/Thiru110/THH_FrontEnd.git
